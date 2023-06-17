@@ -33,37 +33,49 @@ redis_conn = redis.Redis(
 @jwt_required()
 def spawn():
     user_id = get_jwt_identity()
-    challenge_id = request.json['challenge_id']
-    instance_id = time() # figure out new way to generate instance ID. Ideas: UNIX timestamp, username or handle in the CTF, teamname, etc.
-    spawn_challenge(
-        challenge_id=challenge_id,
-        instance_id=instance_id,
-        redis_conn=redis_conn,
-        user_id=user_id
-    )
-    return "Challenge instance spawned.", 200
+    challenge_id = request.json.get('challenge_id')
+    if challenge_id:
+        try:
+            instance_id = time() # figure out new way to generate instance ID. Ideas: UNIX timestamp, username or handle in the CTF, teamname, etc.
+            spawn_challenge(
+                challenge_id=challenge_id,
+                instance_id=instance_id,
+                redis_conn=redis_conn,
+                user_id=user_id
+            )
+            return "Challenge instance spawned.", 200
+        except Exception as e:
+            return str(e), 400
+    else:
+        return "Challenge ID is missing.", 400
 
 
 @app.route('/stop-challenge', methods=["POST"])
 @jwt_required()
 def stop():
-    user_id = get_jwt_identity()
-    stop_challenge(
-        redis_conn=redis_conn,
-        user_id=user_id
-    )
-    return "Challenge instance stopped.", 200
+    try:
+        user_id = get_jwt_identity()
+        stop_challenge(
+            redis_conn=redis_conn,
+            user_id=user_id
+        )
+        return "Challenge instance stopped.", 200
+    except Exception as e:
+        return str(e), 400
 
 
 @app.route('/restart-challenge', methods=["POST"])
 @jwt_required()
 def restart():
-    user_id = get_jwt_identity()
-    restart_challenge(
-        redis_conn=redis_conn,
-        user_id=user_id
-    )
-    return "Challenge instance restarted.", 200
+    try:
+        user_id = get_jwt_identity()
+        restart_challenge(
+            redis_conn=redis_conn,
+            user_id=user_id
+        )
+        return "Challenge instance restarted.", 200
+    except Exception as e:
+        return str(e), 400
 
 
 @app.route('/get-node-available-memory', methods=["GET"])
