@@ -1,3 +1,5 @@
+.env
+
 challenges/
 test.py
 info.txt
