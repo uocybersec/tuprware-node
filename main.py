@@ -88,5 +88,6 @@ def get_avail_mem():
 def test():
     return create_access_token(identity='e0df7f84-0061-44d3-b531-e4bc22428a27')
 
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', debug=False)
