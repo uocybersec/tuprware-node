@@ -27,7 +27,6 @@ redis_conn = redis.Redis(
     decode_responses=True
 )
 
-# ERROR PROOF ALL ROUTES
 # DEAL WITH TOKENS EXPIRING
 @app.route('/spawn-challenge', methods=["POST"])
 @jwt_required()
@@ -88,5 +87,13 @@ def get_avail_mem():
 def test():
     return create_access_token(identity='e0df7f84-0061-44d3-b531-e4bc22428a27')
 
+
 if __name__ == '__main__':
+    print("""
+ _____                                  
+|_   _|  _ _ __ _ ___ __ ____ _ _ _ ___ 
+  | || || | '_ \ '_\ V  V / _` | '_/ -_)
+  |_| \_,_| .__/_|  \_/\_/\__,_|_| \___| [Node]
+          |_|                                                                    
+    """)
     app.run(host='127.0.0.1', debug=False)

@@ -6,4 +6,7 @@ echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://pack
 sudo apt-get update
 sudo apt-get install redis
 
+pip3 install -r requirements.txt
 
+mkdir /tmp/uoctf-challenges
+python3 build_challenges.py
