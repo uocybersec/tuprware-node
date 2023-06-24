@@ -16,7 +16,7 @@ def main():
         aws_secret_access_key=os.getenv('AWS_SECRET_KEY')
     )
 
-    CHALLENGES_S3_BUCKET_NAME = 'uoctfchallenges'
+    CHALLENGES_S3_BUCKET_NAME = os.getenv('AWS_CHALLENGE_S3_BUCKET_NAME')
     PATH_TO_CHALLENGES = '/tmp/uoctf-challenges/'
     NUM_OF_CHALLENGES = s3_client.list_objects_v2(Bucket=CHALLENGES_S3_BUCKET_NAME)['KeyCount']
     CHALLENGE_IDS = range(1, NUM_OF_CHALLENGES+1) # Challenge IDs range from 1...N for N challenges
