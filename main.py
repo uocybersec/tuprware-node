@@ -1,5 +1,3 @@
-# USEFUL REDDIT THREAD: https://www.reddit.com/r/docker/comments/u73dxw/starting_containers_dynamically_question/
-
 import docker
 import redis
 import os
@@ -10,7 +8,6 @@ from flask import request
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import create_access_token
 from utils.control_challenges import spawn_challenge
 from utils.control_challenges import stop_challenge
 from utils.control_challenges import restart_challenge
@@ -35,7 +32,7 @@ def spawn():
     challenge_id = request.json.get('challenge_id')
     if challenge_id:
         try:
-            instance_id = time() # figure out new way to generate instance ID. Ideas: UNIX timestamp, username or handle in the CTF, teamname, etc.
+            instance_id = time() # figure out better way to generate instance ID. Ideas: UNIX timestamp, username or handle in the CTF, teamname, etc.
             spawn_challenge(
                 challenge_id=challenge_id,
                 instance_id=instance_id,
@@ -82,12 +79,6 @@ def get_avail_mem():
     return "work in progress", 200
 
 
-# ***** REMOVE LATER *****
-@app.route('/test') # test route to give myself a JWT to authenticate myself
-def test():
-    return create_access_token(identity='e0df7f84-0061-44d3-b531-e4bc22428a27')
-
-
 if __name__ == '__main__':
     print("""
  _____                                  
@@ -96,4 +87,4 @@ if __name__ == '__main__':
   |_| \_,_| .__/_|  \_/\_/\__,_|_| \___| [Node]
           |_|                                                                    
     """)
-    app.run(host='127.0.0.1', debug=False)
+    app.run(host='0.0.0.0', debug=False)
