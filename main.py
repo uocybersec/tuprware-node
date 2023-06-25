@@ -24,7 +24,6 @@ redis_conn = redis.Redis(
     decode_responses=True
 )
 
-# DEAL WITH TOKENS EXPIRING
 @app.route('/spawn-challenge', methods=["POST"])
 @jwt_required()
 def spawn():
