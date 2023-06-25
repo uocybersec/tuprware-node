@@ -4,7 +4,7 @@ if [[ $(groups $USER) == *"docker"* ]]; then
 
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
 
-    sudo apt-get update
+    sudo apt-get update -y
     sudo apt-get install python3-pip -y
     sudo apt-get install docker.io -y
     sudo apt-get install redis -y
@@ -27,7 +27,9 @@ if [[ $(groups $USER) == *"docker"* ]]; then
     mkdir /tmp/uoctf-challenges
     python3 build_challenges.py
 else
+    sudo apt-get update -y
+    sudo apt-get install docker.io -y
     sudo usermod -aG docker $USER
-    echo "[!] This current user is not in the 'docker' group. They have now been added to the group.";
-    echo "PLEASE LOG BACK IN AS THIS USER FOR THE EFFECTS TO TAKE PLACE.";
+    echo -e "\n\n[!] This current user is not in the 'docker' group. They have now been added to the group.";
+    echo "PLEASE LOG BACK IN AS THIS USER FOR THE EFFECTS TO TAKE PLACE. THEN RUN THIS SCRIPT AGAIN.";
 fi

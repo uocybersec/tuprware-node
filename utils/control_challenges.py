@@ -12,8 +12,8 @@ client = docker.from_env()
 def spawn_challenge(challenge_id: str, instance_id: str, redis_conn: redis.Redis, user_id: str) -> None:
     # ALSO FIND A WAY TO LOG SOMEWHERE THAT A CONTAINER RAN OUT OF MEMORY SO WE KNOW WHAT CAUSES ISSUES DURING THE CTF
     if redis_conn.get(user_id) == None: # check if the user does not already have an instance running
-        with open('challenges.json', mode='r') as challenges:
-            challenges = json.loads(challenges.read())
+        with open('challenges.json', mode='r') as challenges_json:
+            challenges = json.loads(challenges_json.read())
             if challenge_id in challenges.keys():
                 host_port = get_host_port()
                 instance_name = f'uoctf-{challenge_id}-{instance_id}'

@@ -2,12 +2,12 @@ import docker
 import redis
 import os
 from dotenv import load_dotenv
-from time import time
 from flask import Flask
 from flask import request
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import create_access_token
 from utils.control_challenges import spawn_challenge
 from utils.control_challenges import stop_challenge
 from utils.control_challenges import restart_challenge
@@ -29,9 +29,9 @@ redis_conn = redis.Redis(
 def spawn():
     user_id = get_jwt_identity()
     challenge_id = request.json.get('challenge_id')
+    instance_id = user_id.replace('-', '_')
     if challenge_id:
         try:
-            instance_id = time() # figure out better way to generate instance ID. Ideas: UNIX timestamp, username or handle in the CTF, teamname, etc.
             spawn_challenge(
                 challenge_id=challenge_id,
                 instance_id=instance_id,
@@ -76,6 +76,11 @@ def restart():
 @app.route('/get-node-available-memory', methods=["GET"])
 def get_avail_mem():
     return "work in progress", 200
+
+# ***** REMOVE LATER *****
+@app.route('/test') # test route to give myself a JWT to authenticate myself
+def test():
+    return create_access_token(identity='e0df7f84-0061-44d3-b531-e4bc22428a27')
 
 
 if __name__ == '__main__':
