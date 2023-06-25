@@ -7,9 +7,8 @@
 <br>
 
 ## Installation:
-1. Challenges are should be stored in `/tmp/uoctf-challenges/`
-2. Run the `setup.sh` script to install dependencies
-3. To start the application from here on out, run the `start_node.sh` script. 
+1. Run `./setup.sh` to install dependencies and set up the machine as a Tuprware node.
+2. To start the application from here on out, run `./start_node.sh`. 
 
 <br>
 
