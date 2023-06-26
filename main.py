@@ -2,6 +2,7 @@ import docker
 import redis
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 from flask import Flask
 from flask import request
 from flask_jwt_extended import JWTManager
@@ -80,7 +81,10 @@ def get_avail_mem():
 # ***** REMOVE LATER *****
 @app.route('/test') # test route to give myself a JWT to authenticate myself
 def test():
-    return create_access_token(identity='e0df7f84-0061-44d3-b531-e4bc22428a27')
+    return create_access_token(
+        identity='e0df7f84-0061-44d3-b531-e4bc22428a27',
+        expires_delta=timedelta(days=1)
+    )
 
 
 if __name__ == '__main__':
