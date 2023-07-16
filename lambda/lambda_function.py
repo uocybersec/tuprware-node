@@ -14,6 +14,12 @@
 #     "action": "read",
 #     "user_id": "<USER ID>"
 # }
+#
+# Deleting a key-value pair
+# {
+#     "action": "delete",
+#     "user_id": "<USER ID>"
+# }
 
 import boto3
 
@@ -28,13 +34,20 @@ def lambda_handler(event, context):
         user_id = event['user_id']
         response = table.get_item(
             Key={
-                "user_id": user_id
+                'user_id': user_id
+            }
+        )
+    elif action == 'delete':
+        user_id = event['user_id']
+        response = table.delete_item(
+            Key={
+                'user_id': user_id
             }
         )
     else:
         return {
             'statusCode': 400,
-            'body': "Unknown selected action. The action must either be 'write' or 'read'."
+            'body': "Unknown selected action. The action must either be 'read', 'write', or 'delete'."
         }
     
     return {
