@@ -1,10 +1,2 @@
-.env
-
-challenges/
-test.py
-info.txt
-__pycache__/
-*/__pycache__/
-
-*.rdb
-challenges.json
+deploy.sh
+lambda.zip
