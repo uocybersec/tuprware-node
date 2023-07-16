@@ -1,5 +1,4 @@
 import docker
-import redis
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -19,11 +18,6 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 jwt = JWTManager(app)
 docker_client = docker.from_env()
-redis_conn = redis.Redis(
-    host='localhost', 
-    port=6379, 
-    decode_responses=True
-)
 
 @app.route('/spawn-challenge', methods=["POST"])
 @jwt_required()
@@ -36,7 +30,6 @@ def spawn():
             spawn_challenge(
                 challenge_id=challenge_id,
                 instance_id=instance_id,
-                redis_conn=redis_conn,
                 user_id=user_id
             )
             return "Challenge instance spawned.", 200
@@ -52,7 +45,6 @@ def stop():
     try:
         user_id = get_jwt_identity()
         stop_challenge(
-            redis_conn=redis_conn,
             user_id=user_id
         )
         return "Challenge instance stopped.", 200
@@ -66,7 +58,6 @@ def restart():
     try:
         user_id = get_jwt_identity()
         restart_challenge(
-            redis_conn=redis_conn,
             user_id=user_id
         )
         return "Challenge instance restarted.", 200

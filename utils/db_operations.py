@@ -43,3 +43,11 @@ def set_running_instance_id(user_id: str, instance_id: str) -> int:
     response = invoke_lambda(payload)
     return response['statusCode']
 
+def delete_running_instance_id(user_id: str) -> int:
+    payload = {
+        'action': 'delete',
+        'user_id': user_id
+    }
+    response = invoke_lambda(payload)
+    return response['statusCode']
+

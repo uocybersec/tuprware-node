@@ -1,10 +1,10 @@
 import docker
-import redis
 import json
 from utils.manage_host_ports import get_host_port
 from typing import Tuple
-from db_operations import get_running_instance_id
-from db_operations import set_running_instance_id
+from utils.db_operations import get_running_instance_id
+from utils.db_operations import set_running_instance_id
+from utils.db_operations import delete_running_instance_id
 
 CONTAINER_PORT = 1337
 CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128 megabytes of memory
@@ -31,7 +31,7 @@ def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> None:
                 raise Exception("Invalid challenge ID.")
     else: # if the user already has an instance running, shutdown the instance and start this one
         stop_challenge(user_id)
-        spawn_challenge(challenge_id, instance_id, redis_conn, user_id)
+        spawn_challenge(challenge_id, instance_id, user_id)
 
 
 def stop_challenge(user_id: str) -> Tuple[str, str]:
@@ -42,17 +42,17 @@ def stop_challenge(user_id: str) -> Tuple[str, str]:
         )
         target_container.stop()
         target_container.remove()
-        redis_conn.delete(user_id) # CONTINUE HERE . . . . . . . .
+        delete_running_instance_id(user_id)
         _, challenge_id, instance_id = container_id.split('-')
         return challenge_id, instance_id
     else:
         raise Exception("There is no challenge to stop.")
 
 
-def restart_challenge(redis_conn: redis.Redis, user_id: str) -> None:
+def restart_challenge(user_id: str) -> None:
     try:
-        challenge_id, instance_id = stop_challenge(redis_conn, user_id)
-        spawn_challenge(challenge_id, instance_id, redis_conn, user_id)
+        challenge_id, instance_id = stop_challenge(user_id)
+        spawn_challenge(challenge_id, instance_id, user_id)
     except Exception as e:
         if str(e) == "There is no challenge to stop.":
             raise Exception("There is no challenge to restart.")
