@@ -5,6 +5,9 @@ from typing import Tuple
 from utils.db_operations import get_running_instance_id
 from utils.db_operations import set_running_instance_id
 from utils.db_operations import delete_running_instance_id
+from utils.custom_exceptions import InvalidChallengeIDException
+from utils.custom_exceptions import NoChallengeToStopException
+from utils.custom_exceptions import NoChallengeToRestartException
 
 CONTAINER_PORT = 1337
 CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128 megabytes of memory
@@ -16,19 +19,24 @@ def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> None:
     if get_running_instance_id(user_id) == None: # check if the user does not already have an instance running
         with open('challenges.json', mode='r') as challenges_json:
             challenges = json.loads(challenges_json.read())
+
             if challenge_id in challenges.keys():
                 host_port = get_host_port()
                 instance_id = f'uoctf-{challenge_id}-{instance_id}'
+
                 client.containers.run(
                     image=challenges[challenge_id], 
                     name=instance_id, 
                     detach=True, 
                     ports={CONTAINER_PORT: host_port},
-                    mem_limit=CONTAINER_ALLOCATED_MEMORY # memory is not being allocated to containers when ran on my laptop. this is an issue with my laptop's install of docker. but its important to note that this issue could also happen on nodes. 
+                    mem_limit=CONTAINER_ALLOCATED_MEMORY 
                 )
-                set_running_instance_id(user_id, instance_id)
+
+                res_code = set_running_instance_id(user_id, instance_id)
+                if res_code != 200:
+                    raise Exception(f"[WRITE] Response code from AWS Lambda invokation was {res_code}.")
             else:
-                raise Exception("Invalid challenge ID.")
+                raise InvalidChallengeIDException
     else: # if the user already has an instance running, shutdown the instance and start this one
         stop_challenge(user_id)
         spawn_challenge(challenge_id, instance_id, user_id)
@@ -42,11 +50,14 @@ def stop_challenge(user_id: str) -> Tuple[str, str]:
         )
         target_container.stop()
         target_container.remove()
-        delete_running_instance_id(user_id)
+        res_code = delete_running_instance_id(user_id)
+        if res_code != 200:
+            raise Exception(f"[DELETE] Response code from AWS Lambda invokation was {res_code}.")
+        
         _, challenge_id, instance_id = container_id.split('-')
         return challenge_id, instance_id
     else:
-        raise Exception("There is no challenge to stop.")
+        raise NoChallengeToStopException
 
 
 def restart_challenge(user_id: str) -> None:
@@ -54,7 +65,7 @@ def restart_challenge(user_id: str) -> None:
         challenge_id, instance_id = stop_challenge(user_id)
         spawn_challenge(challenge_id, instance_id, user_id)
     except Exception as e:
-        if str(e) == "There is no challenge to stop.":
-            raise Exception("There is no challenge to restart.")
+        if isinstance(e, NoChallengeToStopException):
+            raise NoChallengeToRestartException
         else:
             raise e

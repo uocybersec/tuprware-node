@@ -15,7 +15,7 @@ dynamoDB_worker = boto3.client(
 def invoke_lambda(payload: object) -> object:
     response = dynamoDB_worker.invoke(
         FunctionName='dynamoDBWorker',
-        Payload=bytes(json.dumps(payload).encode())
+        Payload=json.dumps(payload).encode()
     )
     return json.loads(response['Payload'].read())
 

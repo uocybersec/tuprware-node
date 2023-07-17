@@ -1,13 +1,8 @@
 if [[ $(groups $USER) == *"docker"* ]]; then
-    sudo apt install lsb-release curl gpg
-    curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
-
-    echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-
+    sudo apt install lsb-release curl gpg -y
     sudo apt-get update -y
     sudo apt-get install python3-pip -y
     sudo apt-get install docker.io -y
-    sudo apt-get install redis -y
 
     if test ! -f .env; then
         echo -e "\n\nCreating .env file";

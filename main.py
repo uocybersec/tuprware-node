@@ -11,6 +11,7 @@ from flask_jwt_extended import create_access_token
 from utils.control_challenges import spawn_challenge
 from utils.control_challenges import stop_challenge
 from utils.control_challenges import restart_challenge
+from utils.custom_exceptions import TuprwareNodeException
 
 load_dotenv()
 app = Flask(__name__)
@@ -33,8 +34,11 @@ def spawn():
                 user_id=user_id
             )
             return "Challenge instance spawned.", 200
-        except Exception as e:
+        except TuprwareNodeException as e:
             return str(e), 400
+        except Exception as e:
+            print(e)
+            return "An internal error occured.", 500
     else:
         return "Challenge ID is missing.", 400
 
@@ -48,8 +52,11 @@ def stop():
             user_id=user_id
         )
         return "Challenge instance stopped.", 200
+    except TuprwareNodeException as e:
+            return str(e), 400
     except Exception as e:
-        return str(e), 400
+        print(e)
+        return "An internal error occured.", 500
 
 
 @app.route('/restart-challenge', methods=["POST"])
@@ -61,8 +68,11 @@ def restart():
             user_id=user_id
         )
         return "Challenge instance restarted.", 200
+    except TuprwareNodeException as e:
+            return str(e), 400
     except Exception as e:
-        return str(e), 400
+        print(e)
+        return "An internal error occured.", 500
 
 
 @app.route('/get-node-available-memory', methods=["GET"])
