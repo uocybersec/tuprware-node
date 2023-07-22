@@ -75,9 +75,7 @@ You only need to make sure:
 
 #### DynamoDB
 
-CONTINUE THIS . . . . .
-
-
+Create a table named `containers_spawned` with the partition key `user_id`.
 
 ## The Architecture
 
