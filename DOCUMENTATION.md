@@ -20,13 +20,18 @@
 
 ### Installing Tuprware Node on a selected node
 1. Once logged into your Node, clone this repository.
-2. Run `./setup.sh`. Follow the intructions in the installer. 
+2. If you have already [set up your AWS resources](#setting-up-the-proper-aws-resources), then run `./setup.sh`. Follow the intructions in the installer. You will be asked to input the name of your S3 bucket, along with the access key and secret key of the User you've previously created. 
 
-That's it. 
 
 ### Setting up the proper AWS resources
 
-Tuprware Node depends on the following AWS resources:
+For the future, we could use the [Serverless framework](https://www.serverless.com/) to programmatically generate and configure the AWS resources for Tuprware Node. For now, it must be done manually. 
+
+#### Creating the required Users and Roles
+1. Create a User with the following permission(s):
+    1. `AmazonS3ReadOnlyAccess`
+    2. `AWSLambdaRole`
+2. The required Role will be created during the creation of your Lambda function. Information on its permissions will be given in the [Lambda](#lambda) section.
 
 #### EC2
 In Tuprware Node, an EC2 is considered a Node. You may select any instance type that fits your performance needs. 
@@ -49,20 +54,29 @@ Additionally, the role which you created/reused for the Lambda, must have the fo
 * `AmazonDynamoDBFullAccess`
 
 To upload the code to your Lambda do the following:
-1. Download the code from the [`dynamodb_lambda`](https://github.com/uocybersec/tuprware-node/tree/dynamodb_lambda) branch. 
-2. 
+1. Download the `lambda.zip` file from the [`dynamodb_lambda`](https://github.com/uocybersec/tuprware-node/tree/dynamodb_lambda) branch.
+2. Upload the `lambda.zip` file to your Lambda in AWS. 
 
-
+Your Lambda should now be updated with the proper code. 
 
 
 #### S3
 
+Tuprware Node uses an S3 bucket during the installation process. It pulls challenges from an S3 bucket and builds each of their Docker images. 
+
+Create your S3 bucket however you desire. 
+
+You only need to make sure:
+* That the User attached to the S3 bucket is the User you were previously instructed to create. If you have not created the required Users and Roles, follow [these instructions](#creating-the-required-users-and-roles). 
+* That each challenge is stored as a `.zip` file.
+* That each challenge is numbered from `1.zip` to `N.zip` for N challenges. For example, if I had 3 challenges, I'd have `1.zip`, `2.zip`, and `3.zip`.
+* When each `.zip` file is decompressed, there must be a `Dockerfile` used to build the Docker image of the challenge. 
 
 
 #### DynamoDB
 
+CONTINUE THIS . . . . .
 
-For the future, we could use the [Serverless framework](https://www.serverless.com/) to programmatically generate and configure the AWS resources for Tuprware Node.
 
 
 ## The Architecture
