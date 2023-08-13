@@ -9,11 +9,11 @@
         3. [S3](#s3)
         4. [DynamoDB](#dynamodb)
 2. [The Architecture](#the-architecture)
-3. [Controlling Challenge Containers](#container-operations)
-    1. [Spawning challenge containers](#spawning-challenge-containers)
-    2. [Stopping challenge containers](#stopping-challenge-containers)
-    3. [Restarting challenge containers](#restarting-challenge-containers)
-    4. [Container port mapping](#container-port-mapping)
+3. [Endpoints](#endpoints)
+    1. [Spawning challenge containers](#post-spawn-challenge)
+    2. [Stopping challenge containers](#post-stop-challenge)
+    3. [Restarting challenge containers](#post-restart-challenge)
+    4. [Getting the node's available memory and storage](#get-get-node-available-resources)
 
 
 ## Installation
@@ -93,12 +93,83 @@ The Tuprware Node software is installed on each Node to receive requests to spaw
 
 
 
-## Container Operations
+## Endpoints
 
-### Spawning challenge containers
+### POST `/spawn-challenge`
 
-### Stopping challenge containers
+**AUTHENTICATION REQUIRED**
 
-### Restarting challenge containers
+**Example Request:** 
 
-### Container port mapping
+```http
+POST /spawn-challenge HTTP/1.1
+Host: <NODE'S ADDRESS>
+Authorization: Bearer <AUTHENTICATION TOKEN>
+Content-Type: application/json
+
+{
+    "challenge_id": "<ID OF CHALLENGE YOU WANT TO SPAWN>"
+}
+```
+
+**Example Response:**
+
+```json
+{
+    "status": "success",
+    "instance_address": "<NODE'S ADDRESS>:<PORT CHOSEN>"
+}
+```
+
+<br>
+
+### POST `/stop-challenge`
+
+**AUTHENTICATION REQUIRED**
+
+**Example Request:** 
+
+```http
+POST /stop-challenge HTTP/1.1
+Host: <NODE'S ADDRESS>
+Authorization: Bearer <AUTHENTICATION TOKEN>
+```
+
+**Example Response:**
+
+```json
+{
+    "status": "success"
+}
+```
+
+<br>
+
+### POST `/restart-challenge` 
+
+**AUTHENTICATION REQUIRED**
+
+**Example Request:** 
+
+```http
+POST /restart-challenge HTTP/1.1
+Host: <NODE'S ADDRESS>
+Authorization: Bearer <AUTHENTICATION TOKEN>
+```
+
+**Example Response:**
+
+```json
+{
+    "status": "success",
+    "instance_address": "<NODE'S ADDRESS>:<PORT CHOSEN>"
+}
+```
+
+<br>
+
+### GET `/get-node-available-resources`
+
+**WORK IN PROGRESS**
+
+Intended to return the node's available memory and storage. As of writing this, we are planning on using a single node for our upcoming CTF. Whenever we get to the point of scaling to multiple nodes, this route has to be used. 

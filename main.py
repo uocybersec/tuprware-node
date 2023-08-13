@@ -8,9 +8,9 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import create_access_token
-from utils.control_challenges import spawn_challenge
-from utils.control_challenges import stop_challenge
-from utils.control_challenges import restart_challenge
+from utils.control_containers import spawn_challenge
+from utils.control_containers import stop_challenge
+from utils.control_containers import restart_challenge
 from utils.custom_exceptions import TuprwareNodeException
 
 load_dotenv()
@@ -75,7 +75,7 @@ def restart():
         return "An internal error occured.", 500
 
 
-@app.route('/get-node-available-memory', methods=["GET"])
+@app.route('/get-node-available-resources', methods=["GET"])
 def get_avail_mem():
     return "work in progress", 200
 
