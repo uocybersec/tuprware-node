@@ -8,3 +8,7 @@ __pycache__/
 
 *.rdb
 challenges.json
+
+deploy.sh
+lambda.zip
+
