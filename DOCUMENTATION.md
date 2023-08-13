@@ -114,10 +114,12 @@ Content-Type: application/json
 
 **Example Response:**
 
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
-    "status": "success",
-    "instance_address": "<NODE'S ADDRESS>:<PORT CHOSEN>"
+    "instance_port": <PORT USED TO ACCESS CHALLENGE INSTANCE>
 }
 ```
 
@@ -137,10 +139,8 @@ Authorization: Bearer <AUTHENTICATION TOKEN>
 
 **Example Response:**
 
-```json
-{
-    "status": "success"
-}
+```http
+HTTP/1.1 200 OK
 ```
 
 <br>
@@ -159,10 +159,12 @@ Authorization: Bearer <AUTHENTICATION TOKEN>
 
 **Example Response:**
 
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
-    "status": "success",
-    "instance_address": "<NODE'S ADDRESS>:<PORT CHOSEN>"
+    "instance_port": <NEW PORT USED TO ACCESS CHALLENGE INSTANCE>
 }
 ```
 

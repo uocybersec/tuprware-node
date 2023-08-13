@@ -12,6 +12,7 @@ from utils.control_containers import spawn_challenge
 from utils.control_containers import stop_challenge
 from utils.control_containers import restart_challenge
 from utils.custom_exceptions import TuprwareNodeException
+from utils.response_builder import create_reponse
 
 load_dotenv()
 app = Flask(__name__)
@@ -19,6 +20,11 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 jwt = JWTManager(app)
 docker_client = docker.from_env()
+
+@jwt.unauthorized_loader
+@jwt.invalid_token_loader
+def unauthorized(error): # response for request with invalid JWT
+    return create_reponse(error="Unauthorized."), 401
 
 @app.route('/spawn-challenge', methods=["POST"])
 @jwt_required()
@@ -28,19 +34,20 @@ def spawn():
     instance_id = user_id.replace('-', '_')
     if challenge_id:
         try:
-            spawn_challenge(
+            instance_host_port = spawn_challenge(
                 challenge_id=challenge_id,
                 instance_id=instance_id,
                 user_id=user_id
             )
-            return "Challenge instance spawned.", 200
+
+            return create_reponse(instance_port=instance_host_port), 200
         except TuprwareNodeException as e:
-            return str(e), 400
+            return create_reponse(error=str(e)), 400
         except Exception as e:
             print(e)
-            return "An internal error occured.", 500
+            return create_reponse(error="An internal error occured."), 500 
     else:
-        return "Challenge ID is missing.", 400
+        return create_reponse(error="Challenge ID is missing."), 400
 
 
 @app.route('/stop-challenge', methods=["POST"])
@@ -51,12 +58,12 @@ def stop():
         stop_challenge(
             user_id=user_id
         )
-        return "Challenge instance stopped.", 200
+        return "", 200
     except TuprwareNodeException as e:
-            return str(e), 400
+            return create_reponse(error=str(e)), 400
     except Exception as e:
         print(e)
-        return "An internal error occured.", 500
+        return create_reponse(error="An internal error occured."), 500
 
 
 @app.route('/restart-challenge', methods=["POST"])
@@ -64,15 +71,15 @@ def stop():
 def restart():
     try:
         user_id = get_jwt_identity()
-        restart_challenge(
+        new_host_port = restart_challenge(
             user_id=user_id
         )
-        return "Challenge instance restarted.", 200
+        return create_reponse(instance_port=new_host_port), 200
     except TuprwareNodeException as e:
-            return str(e), 400
+            return create_reponse(error=str(e)), 400
     except Exception as e:
         print(e)
-        return "An internal error occured.", 500
+        return create_reponse(error="An internal error occured."), 500
 
 
 @app.route('/get-node-available-resources', methods=["GET"])

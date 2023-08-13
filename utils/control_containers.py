@@ -14,7 +14,7 @@ CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128
 
 client = docker.from_env()
 
-def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> None:
+def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> int:
     # ALSO FIND A WAY TO LOG SOMEWHERE THAT A CONTAINER RAN OUT OF MEMORY SO WE KNOW WHAT CAUSES ISSUES DURING THE CTF
     if get_running_instance_id(user_id) == None: # check if the user does not already have an instance running
         with open('challenges.json', mode='r') as challenges_json:
@@ -35,11 +35,12 @@ def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> None:
                 res_code = set_running_instance_id(user_id, instance_id)
                 if res_code != 200:
                     raise Exception(f"[WRITE] Response code from AWS Lambda invokation was {res_code}.")
+                return host_port
             else:
                 raise InvalidChallengeIDException
     else: # if the user already has an instance running, shutdown the instance and start this one
         stop_challenge(user_id)
-        spawn_challenge(challenge_id, instance_id, user_id)
+        return spawn_challenge(challenge_id, instance_id, user_id)
 
 
 def stop_challenge(user_id: str) -> Tuple[str, str]:
@@ -60,10 +61,11 @@ def stop_challenge(user_id: str) -> Tuple[str, str]:
         raise NoChallengeToStopException
 
 
-def restart_challenge(user_id: str) -> None:
+def restart_challenge(user_id: str) -> int:
     try:
         challenge_id, instance_id = stop_challenge(user_id)
-        spawn_challenge(challenge_id, instance_id, user_id)
+        new_host_port = spawn_challenge(challenge_id, instance_id, user_id)
+        return new_host_port
     except Exception as e:
         if isinstance(e, NoChallengeToStopException):
             raise NoChallengeToRestartException
