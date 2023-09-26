@@ -4,6 +4,8 @@
 
 ### Deployed on our challenge nodes in the cloud. ☁️
 
+### [Documentation](https://github.com/uocybersec/tuprware-node/DOCUMENTATION.md)
+
 <br>
 
 ## Installation:
