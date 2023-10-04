@@ -1,3 +1,5 @@
+sudo apt-get update -y
+
 if [[ $(groups $USER) == *"docker"* ]]; then
     sudo apt install lsb-release curl gpg -y
     sudo apt-get update -y
