@@ -12,3 +12,4 @@ challenges.json
 deploy.sh
 lambda.zip
 
+app.sock

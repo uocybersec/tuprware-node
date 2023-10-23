@@ -1,3 +1,5 @@
+#!/bin/bash
+
 sudo apt-get update -y
 
 if [[ $(groups $USER) == *"docker"* ]]; then
@@ -5,6 +7,8 @@ if [[ $(groups $USER) == *"docker"* ]]; then
     sudo apt-get update -y
     sudo apt-get install python3-pip -y
     sudo apt-get install docker.io -y
+    sudo apt install nginx -y
+    sudo apt install gunicorn -y
 
     if test ! -f .env; then
         echo -e "\n\nCreating .env file";
@@ -16,13 +20,27 @@ if [[ $(groups $USER) == *"docker"* ]]; then
         echo "AWS_ACCESS_KEY=$access_key" >> .env
         echo "AWS_SECRET_KEY=$secret_key" >> .env
         echo "AWS_CHALLENGE_S3_BUCKET_NAME=$challenge_bucket_name" >> .env
-    fi
+    fi  
 
     pip3 install -r requirements.txt
-
     rm -rf /tmp/uoctf-challenges
     mkdir /tmp/uoctf-challenges
     python3 build_challenges.py
+
+    sudo rm -rf /etc/nginx/sites-available/default
+    sudo rm -rf /etc/nginx/sites-enabled/default
+    cat <<EOF > /etc/nginx/sites-available/tuprware
+server {
+    listen 80;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/tuprware-node/app.sock;
+    }
+}
+EOF
+    sudo ln -s /etc/nginx/sites-available/tuprware /etc/nginx/sites-enabled/
+    sudo systemctl restart nginx
 else
     sudo apt-get update -y
     sudo apt-get install docker.io -y

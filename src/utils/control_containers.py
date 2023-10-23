@@ -1,13 +1,13 @@
 import docker
 import json
-from utils.manage_host_ports import get_host_port
 from typing import Tuple
-from utils.db_operations import get_running_instance_id
-from utils.db_operations import set_running_instance_id
-from utils.db_operations import delete_running_instance_id
-from utils.custom_exceptions import InvalidChallengeIDException
-from utils.custom_exceptions import NoChallengeToStopException
-from utils.custom_exceptions import NoChallengeToRestartException
+from src.utils.manage_host_ports import get_host_port
+from src.utils.db_operations import get_running_instance_id
+from src.utils.db_operations import set_running_instance_id
+from src.utils.db_operations import delete_running_instance_id
+from src.utils.custom_exceptions import InvalidChallengeIDException
+from src.utils.custom_exceptions import NoChallengeToStopException
+from src.utils.custom_exceptions import NoChallengeToRestartException
 
 CONTAINER_PORT = 1337
 CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128 megabytes of memory
