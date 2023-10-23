@@ -1,4 +1,4 @@
-# Tuprware Node
+# Tuprware
 
 ## uOCyberSec's open-source challenge container management software. 
 
