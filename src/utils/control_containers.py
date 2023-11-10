@@ -11,6 +11,7 @@ from src.utils.custom_exceptions import NoChallengeToRestartException
 
 CONTAINER_PORT = 1337
 CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128 megabytes of memory
+#CONTAINER_ALLOCATED_STORAGE = "128m" # every challenge container is allocated X megabytes of storage
 
 client = docker.from_env()
 
@@ -29,7 +30,10 @@ def spawn_challenge(challenge_id: str, instance_id: str, user_id: str) -> int:
                     name=instance_id, 
                     detach=True, 
                     ports={CONTAINER_PORT: host_port},
-                    mem_limit=CONTAINER_ALLOCATED_MEMORY 
+                    mem_limit=CONTAINER_ALLOCATED_MEMORY,
+                    #storage_opt={
+                    #    'size': CONTAINER_ALLOCATED_STORAGE
+                    #}
                 )
 
                 res_code = set_running_instance_id(user_id, instance_id)

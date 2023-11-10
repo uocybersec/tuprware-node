@@ -86,6 +86,15 @@ def restart():
 def get_avail_mem():
     return "work in progress", 200
 
+# login into Tuprware using your Discord account (we use Discord OAuth on the uOCyberSec website)
+@app.route('/login', methods=['POST'])
+def login():
+    discord_account_id = request.json.get('discord_account_id')
+    return create_access_token(
+        identity=discord_account_id,
+        expires_delta=timedelta(days=1)
+    )
+
 # ***** REMOVE LATER *****
 @app.route('/test') # test route to give myself a JWT to authenticate myself
 def test():
@@ -93,6 +102,8 @@ def test():
         identity='e0df7f84-0061-44d3-b531-e4bc22428a27',
         expires_delta=timedelta(days=1)
     )
+
+# make the /get-challenges route to get the available challenges on the frontend 
 
 
 if __name__ == '__main__':
