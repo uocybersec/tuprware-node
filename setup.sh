@@ -29,7 +29,7 @@ if [[ $(groups $USER) == *"docker"* ]]; then
 
     sudo rm -rf /etc/nginx/sites-available/default
     sudo rm -rf /etc/nginx/sites-enabled/default
-    cat <<EOF > /etc/nginx/sites-available/tuprware
+    sudo sh -c 'cat <<EOF > /etc/nginx/sites-available/tuprware
 server {
     listen 80;
 
@@ -38,7 +38,7 @@ server {
         proxy_pass http://unix:/tuprware-node/app.sock;
     }
 }
-EOF
+EOF'
     sudo ln -s /etc/nginx/sites-available/tuprware /etc/nginx/sites-enabled/
     sudo systemctl restart nginx
 else
