@@ -37,6 +37,16 @@ server {
         include proxy_params;
         proxy_pass http://unix:/tuprware-node/app.sock;
     }
+
+
+    location ~ ^/challenge/(?<challenge_port>\d+)/(?<path_info>.*) {
+        rewrite ^/challenge/\d+/(.*)$ /$1 break;
+        proxy_pass http://127.0.0.1:$challenge_port;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
 EOF'
     sudo ln -s /etc/nginx/sites-available/tuprware /etc/nginx/sites-enabled/

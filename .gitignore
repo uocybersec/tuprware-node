@@ -13,3 +13,5 @@ deploy.sh
 lambda.zip
 
 app.sock
+logs/access.log
+logs/errors-and-stdout.log

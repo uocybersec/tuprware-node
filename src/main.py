@@ -31,7 +31,7 @@ def unauthorized(error): # response for request with invalid JWT
 def spawn():
     user_id = get_jwt_identity()
     challenge_id = request.json.get('challenge_id')
-    instance_id = user_id.replace('-', '_')
+    instance_id = user_id
     if challenge_id:
         try:
             instance_host_port = spawn_challenge(
