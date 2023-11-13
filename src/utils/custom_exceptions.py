@@ -18,6 +18,6 @@ class NoChallengeToRestartException(TuprwareNodeException):
     def __init__(self):
         super().__init__('There is no challenge to restart.')
 
-class NoChallengeToRestartException(TuprwareNodeException):
+class ChallengeAlreadyRunningException(TuprwareNodeException):
     def __init__(self):
-        super().__init__('There is no challenge to restart.')
+        super().__init__('This challenge is already running. To restart it, use /restart-challenge.')

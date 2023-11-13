@@ -1,5 +1,7 @@
 # Official Tuprware Node Documentation
 
+## Some major changes have been made to Tuprware for the first uOCTF, so some things here could no longer be valid. 
+
 ## Table of Contents
 1. [Installation](#installation)
     1. [Installing Tuprware Node on a selected node](#installing-tuprware-node-on-a-selected-node)
