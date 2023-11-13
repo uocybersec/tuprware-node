@@ -7,7 +7,7 @@ if [[ $(groups $USER) == *"docker"* ]]; then
     sudo apt-get update -y
     sudo apt-get install python3-pip -y
     sudo apt-get install docker.io -y
-    sudo apt install nginx -y
+    sudo apt install apache2 -y
     sudo apt install gunicorn -y
 
     if test ! -f .env; then
@@ -27,30 +27,8 @@ if [[ $(groups $USER) == *"docker"* ]]; then
     mkdir /tmp/uoctf-challenges
     python3 build_challenges.py
 
-    sudo rm -rf /etc/nginx/sites-available/default
-    sudo rm -rf /etc/nginx/sites-enabled/default
-    sudo sh -c 'cat <<EOF > /etc/nginx/sites-available/tuprware
-server {
-    listen 80;
-
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/tuprware-node/app.sock;
-    }
-
-
-    location ~ ^/challenge/(?<challenge_port>\d+)/(?<path_info>.*) {
-        rewrite ^/challenge/\d+/(.*)$ /$1 break;
-        proxy_pass http://127.0.0.1:$challenge_port;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF'
-    sudo ln -s /etc/nginx/sites-available/tuprware /etc/nginx/sites-enabled/
-    sudo systemctl restart nginx
+    sudo sh -c 'cat apache2.conf > /etc/apache2/apache2.conf'
+    sudo systemctl restart apache2
 else
     sudo apt-get update -y
     sudo apt-get install docker.io -y
