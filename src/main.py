@@ -98,7 +98,7 @@ def login():
         'client_secret': app.config.get('DISCORD_CLIENT_SECRET'),
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': 'http://localhost:3000/callback'
+        'redirect_uri': 'https://ui.uocybersec.com/callback'
     }
 
     res = requests.post('https://discord.com/api/oauth2/token', data=body)
@@ -113,6 +113,10 @@ def login():
                 identity=user_id,
                 expires_delta=timedelta(days=1)
             )
+        else:
+            print(res.content)
+    else:
+        print(res.content)
 
     return "Something went wrong", 401
 

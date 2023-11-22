@@ -49,31 +49,44 @@ server {
 
 server {
     listen 443 ssl;
-    server_name ~^(?<subdomain>\w+)\.uocybersec\.com$;
+    server_name ui.uocybersec.com;
 
     ssl_certificate /etc/nginx/ssl/origin_certificate.pem;
     ssl_certificate_key /etc/nginx/ssl/private_key.pem;
 
     location / {
-        set $port "";
+            include proxy_params;
+            proxy_pass http://127.0.0.1:3000;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name ~^(?<subdomain>\w+)\.uocybersec\.com\$;
+
+    ssl_certificate /etc/nginx/ssl/origin_certificate.pem;
+    ssl_certificate_key /etc/nginx/ssl/private_key.pem;
+
+    location / {
+        set \$port "";
 
         # Extract the port number from the subdomain
-        if ($subdomain ~ ^(?<port>\d+)$) {
-            set $port $subdomain;
+        if (\$subdomain ~ ^(?<port>\d+)\$) {
+            set \$port \$subdomain;
         }
 
         # Deny access to specific ports
         # to block multiple ports, do <port>|<port>
         # MAKE SURE TO BLOCK containerd PORT (use netstat -nl to find it)
-        if ($port ~ ^(22|45929)$) {
+        if (\$port ~ ^(22|45929)\$) {
             return 403;  # Forbidden
         }
 
-        proxy_pass http://127.0.0.1:$port;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://127.0.0.1:\$port;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }
 EOF'

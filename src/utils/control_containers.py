@@ -9,7 +9,7 @@ from src.utils.custom_exceptions import ChallengeAlreadyRunningException
 
 CONTAINER_PORT = 1337
 CONTAINER_ALLOCATED_MEMORY = "128m" # every challenge container is allocated 128 megabytes of memory
-#CONTAINER_ALLOCATED_STORAGE = "128m" # every challenge container is allocated X megabytes of storage
+#CONTAINER_ALLOCATED_STORAGE = "512m" # every challenge container is allocated 512 megabytes of storage
 
 client = docker.from_env()
 

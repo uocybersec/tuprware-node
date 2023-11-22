@@ -44,7 +44,7 @@ def main():
         print('done.')
     
     print('Creating challenges.json file...', end='', flush=True)
-    with open('challenges.json', mode='w') as challenges_json_file:
+    with open('../challenges.json', mode='w') as challenges_json_file:
         challenges_json_file.write(json.dumps(challenges_object))
     print('done.')
 
