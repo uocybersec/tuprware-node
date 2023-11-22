@@ -17,9 +17,13 @@ if [[ $(groups $USER) == *"docker"* ]]; then
         read -p "Access Key: " access_key
         read -p "Secret Key: " secret_key
         read -p "AWS S3 bucket name for storing the challenges: " challenge_bucket_name
+        read -p "Discord App Client ID: " discord_client_id
+        read -p "Discord App Client Secret: " discord_client_secret
         echo "AWS_ACCESS_KEY=$access_key" >> ../.env
         echo "AWS_SECRET_KEY=$secret_key" >> ../.env
         echo "AWS_CHALLENGE_S3_BUCKET_NAME=$challenge_bucket_name" >> ../.env
+        echo "DISCORD_CLIENT_SECRET=$discord_client_secret" >> ../.env
+        echo "DISCORD_CLIENT_ID=$discord_client_id" >> ../.env
     fi  
 
     pip3 install -r ../requirements.txt
@@ -31,8 +35,11 @@ if [[ $(groups $USER) == *"docker"* ]]; then
     sudo rm -rf /etc/nginx/sites-enabled/default
     sudo sh -c 'cat <<EOF > /etc/nginx/sites-available/tuprware
 server {
-    listen 80;
-    server_name ctf.uocybersec.lol;
+    listen 443 ssl;
+    server_name ctf.uocybersec.com;
+
+    ssl_certificate /etc/nginx/ssl/origin_certificate.pem;
+    ssl_certificate_key /etc/nginx/ssl/private_key.pem;
 
     location / {
             include proxy_params;
@@ -41,8 +48,11 @@ server {
 }
 
 server {
-    listen 80;
-    server_name ~^(?<subdomain>\w+)\.uocybersec\.lol$;
+    listen 443 ssl;
+    server_name ~^(?<subdomain>\w+)\.uocybersec\.com$;
+
+    ssl_certificate /etc/nginx/ssl/origin_certificate.pem;
+    ssl_certificate_key /etc/nginx/ssl/private_key.pem;
 
     location / {
         set $port "";
@@ -55,7 +65,7 @@ server {
         # Deny access to specific ports
         # to block multiple ports, do <port>|<port>
         # MAKE SURE TO BLOCK containerd PORT (use netstat -nl to find it)
-        if ($port ~ ^(22)$) {
+        if ($port ~ ^(22|45929)$) {
             return 403;  # Forbidden
         }
 

@@ -1,5 +1,7 @@
 import docker
 import os
+import requests
+from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import timedelta
 from flask import Flask
@@ -16,7 +18,10 @@ from src.utils.response_builder import create_reponse
 
 load_dotenv()
 app = Flask(__name__)
+CORS(app)
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+app.config['DISCORD_CLIENT_ID'] = os.getenv('DISCORD_CLIENT_ID')
+app.config['DISCORD_CLIENT_SECRET'] = os.getenv('DISCORD_CLIENT_SECRET')
 
 jwt = JWTManager(app)
 docker_client = docker.from_env()
@@ -87,19 +92,33 @@ def get_avail_mem():
 # login into Tuprware using your Discord account (we use Discord OAuth on the uOCyberSec website)
 @app.route('/login', methods=['POST'])
 def login():
-    discord_account_id = request.json.get('discord_account_id')
-    return create_access_token(
-        identity=discord_account_id,
-        expires_delta=timedelta(days=1)
-    )
+    code = request.json.get('code') # temporary code from discord OAuth2
+    body = {
+        'client_id': app.config.get('DISCORD_CLIENT_ID'),
+        'client_secret': app.config.get('DISCORD_CLIENT_SECRET'),
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': 'http://localhost:3000/callback'
+    }
 
-# ***** REMOVE LATER *****
-@app.route('/test') # test route to give myself a JWT to authenticate myself
-def test():
-    return create_access_token(
-        identity='e0df7f84-0061-44d3-b531-e4bc22428a27',
-        expires_delta=timedelta(days=1)
-    )
+    res = requests.post('https://discord.com/api/oauth2/token', data=body)
+    if res.status_code == 200:
+        access_token = res.json()['access_token']
+        res = requests.get('https://discord.com/api/users/@me', headers={
+            'Authorization': f'Bearer {access_token}'
+        })
+        if res.status_code == 200:
+            user_id = res.json()['id']
+            return create_access_token(
+                identity=user_id,
+                expires_delta=timedelta(days=1)
+            )
+
+    return "Something went wrong", 401
+
+@app.route('/get-challenges')
+def get_challenges():
+    return ""
 
 # make the /get-challenges route to get the available challenges on the frontend 
 
