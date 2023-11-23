@@ -49,7 +49,7 @@ def spawn():
         except TuprwareNodeException as e:
             return create_reponse(error=str(e)), 400
         except Exception as e:
-            print(e)
+            print(e.with_traceback())
             return create_reponse(error="An internal error occured."), 500 
     else:
         return create_reponse(error="Challenge ID is missing."), 400
@@ -125,14 +125,36 @@ def login():
 @app.route('/get-challenges', methods=['POST'])
 @jwt_required()
 def get_challenges():
+    '''
+    {
+        name: "PWN me!",
+        id: 1,
+        points: 500,
+        category: "crypto",
+        description: "I wanna be PWNED!!",
+        running: false,
+        runnable: true
+        instance_port: null
+    }
+    '''
     user_id = get_jwt_identity()
     running_instance_id = get_running_instance_id(user_id)
-    total_info = {
-        'running': running_instance_id
-    }
-    with open('../challenge_info.json', mode='r') as challenge_info:
+    running_instance = None
+    if running_instance_id:
+        running_instance = '-'.join(running_instance_id.split('-')[:2]) # if running instance id is uoctf-1-1234567 -> running instance is just uoctf-1
+        current_container_port_info = docker_client.containers.get(running_instance_id).attrs['NetworkSettings']['Ports']
+
+    total_info = []
+    with open('challenge_info.json', mode='r') as challenge_info:
         info = json.loads(challenge_info.read())
-        total_info['all_challenges'] = info
+        for challenge in info:
+            if running_instance == 'uoctf-' + str(challenge['id']):
+                challenge['running'] = True
+                challenge['instance_port'] = current_container_port_info[list(current_container_port_info.keys())[0]][0]['HostPort']
+            else:
+                challenge['running'] = False
+                challenge['instance_port'] = None
+            total_info.append(challenge)
     return total_info, 200
 
 
