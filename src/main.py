@@ -122,7 +122,7 @@ def login():
 
     return "Something went wrong", 401
 
-@app.route('/get-challenges')
+@app.route('/get-challenges', methods=['POST'])
 @jwt_required()
 def get_challenges():
     user_id = get_jwt_identity()
