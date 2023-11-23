@@ -1,6 +1,7 @@
 import docker
 import os
 import requests
+import json
 from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -13,6 +14,7 @@ from flask_jwt_extended import create_access_token
 from src.utils.control_containers import spawn_challenge
 from src.utils.control_containers import stop_challenge
 from src.utils.control_containers import restart_challenge
+from src.utils.control_containers import get_running_instance_id
 from src.utils.custom_exceptions import TuprwareNodeException
 from src.utils.response_builder import create_reponse
 
@@ -121,10 +123,18 @@ def login():
     return "Something went wrong", 401
 
 @app.route('/get-challenges')
+@jwt_required()
 def get_challenges():
-    return ""
+    user_id = get_jwt_identity()
+    running_instance_id = get_running_instance_id(user_id)
+    total_info = {
+        'running': running_instance_id
+    }
+    with open('../challenge_info.json', mode='r') as challenge_info:
+        info = json.loads(challenge_info.read())
+        total_info['all_challenges'] = info
+    return total_info, 200
 
-# make the /get-challenges route to get the available challenges on the frontend 
 
 
 if __name__ == '__main__':
