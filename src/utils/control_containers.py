@@ -17,8 +17,10 @@ def get_running_instance_id(user_id: str) -> str:
     running_instance_id = None
     containers = client.containers.list(all=True) # get the actual running instance id on the server
     for container in containers:
-        if container.name.split('-')[2] == user_id: # if we actually have the instance id on the server
-            running_instance_id = container.name
+        split_container_name = container.name.split('-')
+        if len(split_container_name) == 3:
+            if container.name.split('-')[2] == user_id: # if we actually have the instance id on the server
+                running_instance_id = container.name
             
     return running_instance_id
 
