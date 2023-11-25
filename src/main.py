@@ -24,6 +24,7 @@ CORS(app)
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config['DISCORD_CLIENT_ID'] = os.getenv('DISCORD_CLIENT_ID')
 app.config['DISCORD_CLIENT_SECRET'] = os.getenv('DISCORD_CLIENT_SECRET')
+app.config['DISCORD_OAUTH_REDIRECT_URI'] = os.getenv('DISCORD_OAUTH_REDIRECT_URI')
 
 jwt = JWTManager(app)
 docker_client = docker.from_env()
@@ -100,7 +101,7 @@ def login():
         'client_secret': app.config.get('DISCORD_CLIENT_SECRET'),
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': 'https://ui.uocybersec.com/callback'
+        'redirect_uri': app.config.get('DISCORD_OAUTH_REDIRECT_URI')
     }
 
     res = requests.post('https://discord.com/api/oauth2/token', data=body)
