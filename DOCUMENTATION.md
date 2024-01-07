@@ -89,6 +89,8 @@ Here is a diagram of the architecture for Tuprware using a single node:
 
 ![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cb214238-9fdd-4d0e-b78f-278c69ec1b99)
 
+### Future Plans
+- Place AWS resources within a custom VPC to organize them better and improve security.
 
 
 ### Important notes
