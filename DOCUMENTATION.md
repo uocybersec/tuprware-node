@@ -81,14 +81,13 @@ Create a table named `containers_spawned` with the partition key `user_id`.
 
 Tuprware Node heavily relies on AWS resources.
 
-Here is a diagram of the current architecture for Tuprware:
-
-![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cb214238-9fdd-4d0e-b78f-278c69ec1b99)
-
-
-Here is a diagram of the future architecture for Tuprware:
+Here is a diagram of Tuprware's cloud-based architecture:
 
 ![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cc675069-a6f8-45cb-8bff-571391a04b1a)
+
+Here is a diagram of the architecture for Tuprware using a single node:
+
+![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cb214238-9fdd-4d0e-b78f-278c69ec1b99)
 
 
 
