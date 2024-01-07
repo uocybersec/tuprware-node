@@ -81,6 +81,10 @@ Create a table named `containers_spawned` with the partition key `user_id`.
 
 Tuprware Node heavily relies on AWS resources.
 
+### Future Plans
+Utilize AWS VPCs to organize the cliud resources much better and improve security by controlling what resources can talk to what.
+![BETTER Tuprware Architecture](https://github.com/uocybersec/tuprware-node/assets/61163520/d3f3f71a-bde2-4d17-84e9-1675a51e14d4)
+
 Here is a diagram of Tuprware's cloud-based architecture:
 
 ![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cc675069-a6f8-45cb-8bff-571391a04b1a)
@@ -89,8 +93,7 @@ Here is a diagram of the architecture for Tuprware using a single node:
 
 ![image](https://github.com/uocybersec/tuprware-node/assets/61163520/cb214238-9fdd-4d0e-b78f-278c69ec1b99)
 
-### Future Plans
-- Place AWS resources within a custom VPC to organize them better and improve security.
+
 
 
 ### Important notes
