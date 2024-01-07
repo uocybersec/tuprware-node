@@ -4,6 +4,10 @@
 
 ### Deployed on our challenge nodes in the cloud. ☁️
 
+The software's cloud-based architecture:
+![image](https://github.com/uocybersec/tuprware-node/assets/61163520/5234b8db-1dc1-4a69-a4a9-f9d6aa15bb43)
+
+
 ### [Documentation](https://github.com/uocybersec/tuprware-node/blob/main/DOCUMENTATION.md)
 
 ## Installation:
